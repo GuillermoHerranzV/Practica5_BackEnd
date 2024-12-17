@@ -1,5 +1,5 @@
 import { ClientSession, Collection, ObjectId } from "mongodb";
-import { PokemonModel, Pokemon } from "./types.ts";
+import {  Pokemon } from "./types.ts";
 import { GraphQLError } from "graphql";
 
 type QueryPokemonNameArgs = {
@@ -15,7 +15,7 @@ export const resolvers = {
                 const response = await fetch (abilities.ability.url);
                 const data = await response.json();
                 return {
-                    name: abilities.ability.name;
+                    name: abilities.ability.name,
                     effect: data.effect_entries.find ((entry) => entry.language.name === "en")?.effect || "No description",
                 };
 
@@ -27,7 +27,7 @@ export const resolvers = {
 
     Query: {
 
-        pokemon: async (_:unknown, args: QueryPokemonNameArgs): Promise <Pokemon|null> => {
+        pokemon: async (_:unknown, args: QueryPokemonNameArgs) => {
 
             const response = await fetch (`https://pokeapi.co/api/v2/pokemon/${args.name}`);
 
@@ -35,7 +35,7 @@ export const resolvers = {
                 throw new Error ("Error al obtener el pokemon");
             }
 
-            const datosPokemon = response.json();
+            const datosPokemon = await response.json();
 
             return {
                 id: datosPokemon.id,

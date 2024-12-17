@@ -1,16 +1,8 @@
 import { OptionalId, ObjectId } from "mongodb";
 
-export type PokemonModel = OptionalId <{
-
-    name: string,
-    abilities: Abilities [],
-    moves: Moves [],
-
-}>
-
 export type Pokemon = {
 
-    id: string,
+    id: number,
     name: string,
     abilities: Abilities [],
     moves: Moves [],
