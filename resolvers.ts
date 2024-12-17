@@ -1,27 +1,44 @@
-import { ClientSession, Collection, ObjectId } from "mongodb";
 import {  Pokemon } from "./types.ts";
 import { GraphQLError } from "graphql";
 
 type QueryPokemonNameArgs = {
-    name: string;
+    id: number,
+    name: string,
 };
 
 export const resolvers = {
 
     Pokemon: {
-        abilities: async (parent:Pokemon) => {
-            const abilityPromises = parent.abilities.map (async (abilities) => {
 
-                const response = await fetch (abilities.ability.url);
+        id: (parent:Pokemon) => {
+
+            return parent.id;
+
+        },
+
+        name: (parent: Pokemon) => {
+
+            return parent.name;
+
+        },
+
+        /*abilities: async (parent:Pokemon) => {
+            const abilityPromises = parent.abilities.map (async (ability) => {
+
+                const response = await fetch (ability.url);
                 const data = await response.json();
                 return {
-                    name: abilities.ability.name,
-                    effect: data.effect_entries.find ((entry) => entry.language.name === "en")?.effect || "No description",
+                    name: ability.name,
+                    //effect: data.effect_entries.find ((entry: any) => entry.language.name === "en")?.effect || "No description",
+                    is_hidden: ability.is_hidden,
+                    pokemon: ability.pokemon,
                 };
 
             });
             return Promise.all (abilityPromises);
-        } 
+        }*/
+
+
 
     },
 
@@ -29,19 +46,30 @@ export const resolvers = {
 
         pokemon: async (_:unknown, args: QueryPokemonNameArgs) => {
 
-            const response = await fetch (`https://pokeapi.co/api/v2/pokemon/${args.name}`);
+            if (args.id){
+                const response = await fetch (`https://pokeapi.co/api/v2/pokemon/${args.id}`);
 
-            if (!response.ok){
-                throw new Error ("Error al obtener el pokemon");
-            }
+                if (!response.ok){
+                    throw new Error ("Error al obtener el pokemon");
+                }
+    
+                const pokemonData = await response.json();
+    
+                return pokemonData;
 
-            const datosPokemon = await response.json();
+            }else if (args.name){
+                const response = await fetch (`https://pokeapi.co/api/v2/pokemon/${args.name}`);
 
-            return {
-                id: datosPokemon.id,
-                name: datosPokemon.name,
-                abilities: datosPokemon.abilities,
-                moves: datosPokemon.moves,
+                if (!response.ok){
+                    throw new Error ("Error al obtener el pokemon");
+                }
+    
+                const pokemonData = await response.json();
+    
+                return pokemonData;
+
+            }else {
+                throw new Error("Debes proporcionar un id o un nombre");
             }
 
         },

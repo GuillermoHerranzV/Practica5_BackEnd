@@ -1,24 +1,34 @@
-import { OptionalId, ObjectId } from "mongodb";
 
 export type Pokemon = {
 
     id: number,
     name: string,
-    abilities: Abilities [],
+    abilities: Ability [],
     moves: Moves [],
 
 }
 
-export type Abilities = {
+export type Ability = {
 
     name: string,
     effect: string,
+    language: string,
+    url: string,
+    is_hidden: boolean,
+    pokemon: Pokemon [],
+
+}
+
+export type Language = {
+
+    name: string,
+    url: string,
 
 }
 
 export type Moves = {
 
     name: string,
-    power: number,
+    url: string,
 
 }

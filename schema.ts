@@ -4,29 +4,40 @@ type Pokemon{
 
     id: Int!
     name: String!
-    abilities: [Abilities!]!
-    moves: [Moves!]!
+    abilities: [Ability]
+    moves: [Moves]
 
 }
 
-type Abilities{
+type Ability{
 
-    name: String!
-    effect: String!
+    name: String
+    effect: String
+    language: String
+    url: String
+    is_hidden: Boolean
+    pokemon: [Pokemon]
+
+}
+
+type Language {
+
+    name: String
+    url: String
 
 }
 
 type Moves{
 
-    name: String!
-    power: Int!
+    name: String
+    power: Int
+    url: String
 
 }
 
 type Query{
 
-    pokemon (name: String!): Pokemon
-    pokemon (id: ID!): Pokemon
+    pokemon (id: Int, name: String): Pokemon
 
 }
 
