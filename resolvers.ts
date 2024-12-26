@@ -1,4 +1,4 @@
-import {  Pokemon } from "./types.ts";
+import {  Pokemon, Ability, Moves } from "./types.ts";
 import { GraphQLError } from "graphql";
 
 type QueryPokemonNameArgs = {
@@ -22,23 +22,45 @@ export const resolvers = {
 
         },
 
-        /*abilities: async (parent:Pokemon) => {
-            const abilityPromises = parent.abilities.map (async (ability) => {
+        abilities: async (parent:Pokemon): Promise <Ability[]> => {
+            console.log (parent.abilities);
 
-                const response = await fetch (ability.url);
+            const abilityPromises = await Promise.all (parent.abilities.map (async (ability) => {
+                console.log (ability.ability.url);
+                const response = await fetch (ability.ability.url);
+                if (!response.ok){
+                    return null;
+                }
                 const data = await response.json();
                 return {
-                    name: ability.name,
-                    //effect: data.effect_entries.find ((entry: any) => entry.language.name === "en")?.effect || "No description",
+                    name: ability.ability.name,
+                    effect: data.effect_entries.find ((entry: any) => entry.language.name === "en")?.effect || "No description",
                     is_hidden: ability.is_hidden,
-                    pokemon: ability.pokemon,
+                    pokemon: data.pokemon.pokemon,
                 };
 
-            });
+            }))
             return Promise.all (abilityPromises);
-        }*/
+        },
 
-
+        moves: async (parent: Pokemon): Promise <Moves []> => {
+            //console.log (parent.moves);
+            
+            const MovePromises = await Promise.all (parent.moves.map (async (move) => {
+                const response = await fetch (move.move.url);
+                if (!response.ok){return null;}
+                const data = await response.json();
+                return {
+                    name: move.move.name,
+                    power: data.power,
+                    accuracy: data.accuracy,
+                    pp: data.pp,
+                    priority: data.priority,
+                    damage_class: data.damage_class.name,
+                };
+            }))
+            return Promise.all (MovePromises);
+        }
 
     },
 

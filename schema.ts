@@ -12,27 +12,28 @@ type Pokemon{
 type Ability{
 
     name: String
+    ability: Data
     effect: String
-    language: String
-    url: String
     is_hidden: Boolean
     pokemon: [Pokemon]
-
-}
-
-type Language {
-
-    name: String
-    url: String
 
 }
 
 type Moves{
 
     name: String
+    move: Data
     power: Int
-    url: String
+    accuracy: Int
+    pp: Int
+    priority: Int
+    damage_class: String
 
+}
+
+type Data{
+    name: String
+    url: String
 }
 
 type Query{

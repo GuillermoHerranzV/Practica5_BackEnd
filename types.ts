@@ -11,24 +11,22 @@ export type Pokemon = {
 export type Ability = {
 
     name: string,
+    ability: {name: string, url: string},
     effect: string,
-    language: string,
-    url: string,
     is_hidden: boolean,
     pokemon: Pokemon [],
-
-}
-
-export type Language = {
-
-    name: string,
-    url: string,
 
 }
 
 export type Moves = {
 
     name: string,
-    url: string,
+    power: number,
+    accuracy: number,
+    pp: number,
+    priority: number,
+    damage_class: string,
+    move: {name: string, url: string},
+    pokemon: Pokemon [],
 
 }
