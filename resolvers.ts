@@ -22,7 +22,7 @@ export const resolvers = {
 
         },
 
-        abilities: async (parent:Pokemon): Promise <Ability[]> => {
+        abilities: async (parent:Pokemon) => {
             console.log (parent.abilities);
 
             const abilityPromises = await Promise.all (parent.abilities.map (async (ability) => {
@@ -32,24 +32,39 @@ export const resolvers = {
                     return null;
                 }
                 const data = await response.json();
+
+                const pokemonArray = await Promise.all (data.pokemon.map (async (poke:any) => {
+                    const pkmnResponse = await fetch (poke.pokemon.url);
+                    if (!pkmnResponse.ok){return null;}
+                    const pkmnData = await pkmnResponse.json ();
+                    return pkmnData;
+                }))
+
                 return {
                     name: ability.ability.name,
                     effect: data.effect_entries.find ((entry: any) => entry.language.name === "en")?.effect || "No description",
                     is_hidden: ability.is_hidden,
-                    pokemon: data.pokemon.pokemon,
+                    pokemon: pokemonArray,
                 };
 
             }))
             return Promise.all (abilityPromises);
         },
 
-        moves: async (parent: Pokemon): Promise <Moves []> => {
-            //console.log (parent.moves);
+        moves: async (parent: Pokemon) => {
             
             const MovePromises = await Promise.all (parent.moves.map (async (move) => {
                 const response = await fetch (move.move.url);
                 if (!response.ok){return null;}
                 const data = await response.json();
+
+                const pokemonArray = await Promise.all (data.learned_by_pokemon.slice(0,10).map (async (poke:any) => {
+                    const pkmnResponse = await fetch (poke.url);
+                    if (!pkmnResponse.ok){return null;}
+                    const pkmnData = await pkmnResponse.json ();
+                    return pkmnData;
+                }))
+
                 return {
                     name: move.move.name,
                     power: data.power,
@@ -57,6 +72,7 @@ export const resolvers = {
                     pp: data.pp,
                     priority: data.priority,
                     damage_class: data.damage_class.name,
+                    pokemon: pokemonArray,
                 };
             }))
             return Promise.all (MovePromises);

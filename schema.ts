@@ -28,6 +28,7 @@ type Moves{
     pp: Int
     priority: Int
     damage_class: String
+    pokemon: [Pokemon]
 
 }
 
