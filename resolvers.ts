@@ -22,6 +22,27 @@ export const resolvers = {
 
         },
 
+        height: (parent: Pokemon) => {
+            return parent.height;
+        },
+
+        weight: (parent: Pokemon) => {
+            return parent.weight;
+        },
+
+        base_experience: (parent: Pokemon) => {
+            return parent.base_experience;
+        },
+
+        types: (parent: Pokemon) => {
+            return parent.types.map ((type:any) => {
+                return {
+                    name: type.type.name,
+                    slot: type.slot,
+                }
+            });
+        },
+
         abilities: async (parent:Pokemon) => {
             console.log (parent.abilities);
 
@@ -44,6 +65,7 @@ export const resolvers = {
                     name: ability.ability.name,
                     effect: data.effect_entries.find ((entry: any) => entry.language.name === "en")?.effect || "No description",
                     is_hidden: ability.is_hidden,
+                    slot: ability.slot,
                     pokemon: pokemonArray,
                 };
 
@@ -71,6 +93,7 @@ export const resolvers = {
                     accuracy: data.accuracy,
                     pp: data.pp,
                     priority: data.priority,
+                    type: data.type.name,
                     damage_class: data.damage_class.name,
                     pokemon: pokemonArray,
                 };

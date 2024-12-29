@@ -3,6 +3,10 @@ export type Pokemon = {
 
     id: number,
     name: string,
+    height: number,
+    weight: number,
+    base_experience: number,
+    types: Type [],
     abilities: Ability [],
     moves: Moves [],
 
@@ -14,6 +18,7 @@ export type Ability = {
     ability: {name: string, url: string},
     effect: string,
     is_hidden: boolean,
+    slot: number,
     pokemon: Pokemon [],
 
 }
@@ -25,8 +30,14 @@ export type Moves = {
     accuracy: number,
     pp: number,
     priority: number,
+    type: string,
     damage_class: string,
     move: {name: string, url: string},
     pokemon: Pokemon [],
 
+}
+
+export type Type = {
+    name: string,
+    slot: number,
 }
