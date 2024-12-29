@@ -1,5 +1,4 @@
-import {  Pokemon, Ability, Moves } from "./types.ts";
-import { GraphQLError } from "graphql";
+import {  Pokemon } from "./types.ts";
 
 type QueryPokemonNameArgs = {
     id: number,
@@ -44,16 +43,17 @@ export const resolvers = {
         },
 
         abilities: async (parent:Pokemon) => {
-            console.log (parent.abilities);
 
+            //Sacar todas las habilidades con sus datos
             const abilityPromises = await Promise.all (parent.abilities.map (async (ability) => {
-                console.log (ability.ability.url);
+                
                 const response = await fetch (ability.ability.url);
                 if (!response.ok){
                     return null;
                 }
                 const data = await response.json();
 
+                //Sacar el array de pokemon que pueden aprender cada una de esas habilidades para encadenar mas querys
                 const pokemonArray = await Promise.all (data.pokemon.map (async (poke:any) => {
                     const pkmnResponse = await fetch (poke.pokemon.url);
                     if (!pkmnResponse.ok){return null;}
@@ -75,11 +75,13 @@ export const resolvers = {
 
         moves: async (parent: Pokemon) => {
             
+            //Sacar todos los movimientos que aprende el pokemon
             const MovePromises = await Promise.all (parent.moves.map (async (move) => {
                 const response = await fetch (move.move.url);
                 if (!response.ok){return null;}
                 const data = await response.json();
 
+                //Sacar los pokemon que aprenden cada uno de los movimientos. Limitado a 10 porque hay tantos pokemon y tantos movimientos que si no falla la query.
                 const pokemonArray = await Promise.all (data.learned_by_pokemon.slice(0,10).map (async (poke:any) => {
                     const pkmnResponse = await fetch (poke.url);
                     if (!pkmnResponse.ok){return null;}
