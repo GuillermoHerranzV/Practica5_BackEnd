@@ -121,7 +121,7 @@ export const resolvers = {
                 return pokemonData;
 
             }else if (args.name){
-                const response = await fetch (`https://pokeapi.co/api/v2/pokemon/${args.name}`);
+                const response = await fetch (`https://pokeapi.co/api/v2/pokemon/${args.name.toLowerCase()}`);
 
                 if (!response.ok){
                     throw new Error ("Error al obtener el pokemon");
